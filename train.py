@@ -1,6 +1,6 @@
 # encoding: utf-8
+# 2019/02/11 16:27:学習処理の修正。
 #
-
 #
 #import gensim
 from gensim.models.doc2vec import Doc2Vec
@@ -44,14 +44,20 @@ training_docs.append(sent2)
 training_docs.append(sent3)
 #quit()
 
-model = Doc2Vec(documents=training_docs, min_count=1, dm=0)
+model = Doc2Vec(documents=training_docs, dm=1,
+                vector_size=300, window=8, min_count=1, workers=4)
+#model = Doc2Vec(documents=training_docs, dm=1,
+#                size=100, window=8, min_count=1, workers=4)
+
+model.train(training_docs, total_examples=model.corpus_count, epochs=50)
 model.save("./book.model")
 #print(model.docvecs[1])
 #print(model.docvecs.most_similar(1) )
-
+#quit()
 #cos類似度
 def cos_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+#    return 0
 #
 ret2 =cos_sim(model.docvecs[1], model.docvecs[2])
 ret3 =cos_sim(model.docvecs[1], model.docvecs[3])
